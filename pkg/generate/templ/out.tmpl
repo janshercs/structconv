@@ -1,0 +1,28 @@
+package {{.PkgName}}
+
+{{range .Imports}}
+import "{{.}}"
+{{end}}
+
+func Convert(v {{.SrcTypeName}}) {{.DestTypeName}} {
+    return {{.DestTypeName}}{
+        {{range .BasicFields -}}
+        {{.}}: v.{{.}},
+        {{end}}
+
+        {{if .StructFields}}
+            {{range .StructFields -}}
+            {{.}}: Convert{{.}}(v.{{.}}),
+            {{end}}
+        {{end}}
+    }
+}
+
+{{if .StructFields}}
+{{range .StructFields}}
+func Convert{{.}}(v {{.}}) {{.}} {
+    return {{.}}
+}
+{{end}}
+{{end}}
+
